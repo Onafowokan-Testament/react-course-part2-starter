@@ -1,11 +1,11 @@
 import { useState } from "react";
 import usePost from "../hooks/usePost";
-import { set } from "mongoose";
 
 const PostList = () => {
-  const [userId, setUserId] = useState<number>();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const { data: Posts, error, isLoading } = usePost(userId);
+  const { data: Posts, error, isLoading } = usePost({ page, pageSize });
 
   if (isLoading) return <div>Loading ...</div>;
 
@@ -13,16 +13,6 @@ const PostList = () => {
 
   return (
     <>
-      <select
-        className="form-select mb3"
-        onChange={(e) => setUserId(parseInt(e.target.value))}
-        value={userId}
-      >
-        <option value=""></option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
       <ul className="list-group">
         {Posts?.map((post) => (
           <li key={post.id} className="list-group-item">
@@ -30,6 +20,17 @@ const PostList = () => {
           </li>
         ))}
       </ul>
+
+      <button
+        disabled={page === 1 ? true : false}
+        onClick={() => setPage(page - 1)}
+        className="btn btn-primary"
+      >
+        Previous
+      </button>
+      <button className="btn btn-secondary" onClick={() => setPage(page + 1)}>
+        Next
+      </button>
     </>
   );
 };
